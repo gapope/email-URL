@@ -5,10 +5,10 @@ import getpass
 import email
 import requests
 
-#to find URls in Download emails
+#To find URls in Download emails
 def extract_URLs(M):
 
-    #finding unread emails with the subject D/download
+    #Finding unread emails with the subject D/download
     rv, data = M.search(None, 'UNSEEN SUBJECT', 'Download' or 'download')
     if rv != 'OK':
       print("No messages found!")
@@ -22,18 +22,18 @@ def extract_URLs(M):
             print("ERROR getting message", num)
             return
 
-        #decoding ad saving messsage contents
+        #Decoding ad saving messsage contents
         msg = email.message_from_string(data[0][1].decode('utf-8'))
         extracted.append(msg.get_payload())
         
     return extracted
 
 
-#accessing email account
+#Accessing email account
 M = imaplib.IMAP4_SSL('imap.gmail.com')
 
 try:
-    M.login('USER@gmail.com', 'PASSWORD') #using an app password is recommended
+    M.login('USER@gmail.com', 'PASSWORD') #Using an app password is recommended
 except imaplib.IMAP4.error:
     print("LOGIN FAILED!!! ")
 
@@ -46,24 +46,20 @@ if rv == 'OK':
 M.logout
 
 #Placing download location
-user = getpass.getuser()
-if (sys.platform == 'darwin') : #mac computer
-    os.chdir('/Users/' + user + '/Downloads/')
-elif (sys.platform == 'win32' or sys.platform == 'windows') : #windows
-    os.chdir('C:\\users\\' + user + '\\downloads\\')
+os.chdir(os.path.expanduser("~")+"/Downloads/") #Only works on default download folder
 
 if (URLs == []) :
     print('No URLs found')
 
 for URL in URLs:
-    #reformatting URL and downloading file
+    #Reformatting URL and downloading file
     edited = URL.replace('=\r\n', '')
     edited = edited.strip()
     r = requests.get(edited)
 
     print(edited)
     
-    if (r.status_code != 200) : #checking for success
+    if (r.status_code != 200) : #Checking for success
         print("^ Download failed ^")
     
     #finding file name at end of URL
@@ -74,6 +70,6 @@ for URL in URLs:
             beginning += 1
             break
 
-    #saving downloaded file
+    #Saving downloaded file
     with open(edited[beginning: len(edited) + 1], 'wb') as f:
         f.write(r.content)
