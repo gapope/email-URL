@@ -63,6 +63,9 @@ for URL in URLs:
 
     print(edited)
     
+    if (r.status_code != 200) : #checking for success
+        print("^ Download failed ^")
+    
     #finding file name at end of URL
     beginning = 0
     for c in range(len(edited)-1, 0, -1):
