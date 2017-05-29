@@ -34,8 +34,8 @@ M = imaplib.IMAP4_SSL('imap.gmail.com')
 
 try:
     M.login('USER@gmail.com', 'PASSWORD') #Using an app password is recommended
-except imaplib.IMAP4.error:
-    print("LOGIN FAILED!!! ")
+except imaplib.IMAP4.error: #On failure
+    print("Login failed")
 
 rv,data = M.select("INBOX")
 
