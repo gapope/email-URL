@@ -24,7 +24,7 @@ def extract_URLs(M):
 
         #Decoding ad saving messsage contents
         msg = email.message_from_string(data[0][1].decode('utf-8'))
-        extracted.append(msg.get_payload())
+        extracted.append(re.search("(?P<url>https?://[^\s]+)", msg.get_payload(),re.U).group("url"))
         
     return extracted
 
@@ -52,24 +52,23 @@ if (URLs == []) :
     print('No URLs found')
 
 for URL in URLs:
-    #Reformatting URL and downloading file
-    edited = URL.replace('=\r\n', '')
-    edited = edited.strip()
-    r = requests.get(edited)
+    URL = str(URL)
+    #fetching data from url
+    r = requests.get(URL)
 
-    print(edited)
+    print(URL)
     
     if (r.status_code != 200) : #Checking for success
         print("^ Download failed ^")
     
     #finding file name at end of URL
     beginning = 0
-    for c in range(len(edited)-1, 0, -1):
+    for c in range(len(URL)-1, 0, -1):
         beginning -= 1
-        if edited[c] == "/":
+        if URL[c] == "/":
             beginning += 1
             break
 
     #Saving downloaded file
-    with open(edited[beginning: len(edited) + 1], 'wb') as f:
+    with open(URL[beginning: len(URL) + 1], 'wb') as f:
         f.write(r.content)
